@@ -1,0 +1,36 @@
+import org.apache.spark.sql._
+import org.apache.spark.sql.types._
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+
+val data = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("C:\\Users\\xdere\\Downloads\\AirCustom.csv")
+
+data.createOrReplaceTempView("data_view")
+
+val results = spark.sql("SELECT * FROM data_view WHERE CO_GT != -200 AND PT08_S1_CO != -200 AND NMHC_GT != -200 AND C6H6_GT != -200 AND PT08_S2_NMHC != -200 AND NOx_GT != -200 AND PT08_S3_NOx != -200 AND NO2_GT != -200 AND PT08_S4_NO2 != -200 AND PT08_S5_O3 != -200 AND T != -200 AND RH != -200 AND AH != -200 AND T_Next != -200")
+
+val results2 = results.withColumn("Date", substring_index(results("Date"), "/", 1)).withColumn("Time", substring_index(results("Time"), ":", 1))
+
+import org.apache.spark.sql.functions._
+val toInt    = udf[Int, String]( _.toInt)
+
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.regression.DecisionTreeRegressor
+import org.apache.spark.ml.regression.DecisionTreeRegressionModel
+import org.apache.spark.ml.feature.VectorIndexer
+import org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.Pipeline
+
+
+import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
+
+val paramGrid = new ParamGridBuilder().addGrid(dt.maxDepth, Array(2,3,4,5,6,7)).build()
+val numFolds = 3
+val cv = new CrossValidator().setEstimator(pipeline).setEvaluator(evaluator).setEstimatorParamMaps(paramGrid).setNumFolds(numFolds)
+val model = cv.fit(trainingData)
+val predictions = model.transform(testingData)
+predictions.select("prediction", "T_Next", "features").show(5)
+val rmse = evaluator.evaluate(predictions)
+
+val test = data_id.withColumn("T_Next", when(data_id("id") < 10, -200).otherwise(1))
+
+val test = data_id.withColumn("T_Next", when(data_id("id") < 24, -200).otherwise(expr("select T from data_id_view where (id = data_id('id')-24)")))

@@ -1,0 +1,26 @@
+P(C) = p0 = 0.1
+P(pos|C) = p1 = 0.9
+P(neg|C') = p2 = 0.8
+
+P(pos) = P(C)*P(pos|C) + P(C')+P(pos|C')
+	   = .1*.9 + .9*.2
+	   = .09 + .18 = .27
+--------------------------------------------
+P(C) = p0 = 0.1
+P(pos|C) = p1 = 0.9
+P(neg|C') = p2 = 0.8
+
+P(neg) = P(C)*P(neg|C) + P(C')*P(neg|C')
+	   = p0*(1-p1) + (1-p0)*p2
+--------------------------------------------
+b = a/2
+12a+12b = 1 = 12a+6a
+a=1/18
+
+
+aws
+hortonworkscloudcontroller
+derekypan@gmail.com
+nd@yixian89
+
+"C:\\Users\\xdere\\Downloads\\AirQualityUCI\\AirQualityUCI.csv"
